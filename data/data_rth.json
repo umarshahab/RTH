@@ -1,0 +1,96 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "no": 1,
+        "nama": "RTH Danau Buatan",
+        "alamat": "Rumbai",
+        "tanggal": "11/11/2025"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [101.475516, 0.584386]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "no": 2,
+        "nama": "Stadion Rumbai",
+        "alamat": "Rumbai",
+        "tanggal": "11/11/2025"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [101.432857, 0.572454]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "no": 3,
+        "nama": "Bundaran Chevron",
+        "alamat": "Rumbai",
+        "tanggal": "11/11/2025"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [101.445705, 0.571009]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "no": 4,
+        "nama": "Taman Kota",
+        "alamat": "Pekanbaru Kota",
+        "tanggal": "11/11/2025"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [101.451801, 0.514331]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "no": 5,
+        "nama": "Hutan Kota",
+        "alamat": "Sail",
+        "tanggal": "11/11/2025"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [101.45237, 0.514003]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "no": 6,
+        "nama": "Taman Kaca Mayang",
+        "alamat": "Pekanbaru Kota",
+        "tanggal": "11/11/2025"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [101.448594, 0.513576]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "no": 7,
+        "nama": "Taman Tunjuk Ajar Integritas",
+        "alamat": "Senapelan",
+        "tanggal": "11/11/2025"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [101.442997, 0.534955]
+      }
+    }
+  ]
+}
