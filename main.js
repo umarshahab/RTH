@@ -1,5 +1,6 @@
 import './style.css';
 import 'ol/ol.css';
+
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
@@ -7,195 +8,153 @@ import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import { fromLonLat } from 'ol/proj';
-import { Style, Icon, Stroke } from 'ol/style';
+import { Style, Icon, Stroke, Fill } from 'ol/style';
 import Overlay from 'ol/Overlay';
 
-// Layer polygon Riau
-const riau = new VectorLayer({
-  background : '#1a2b39',
-  source: new VectorSource({
-    format: new GeoJSON(),
-    url: 'data/polygon_riau.json'
-  }),
-  style: {
-    'fill-color': [
-      'interpolate',
-      ['linear'],
-      ['get', 'OBJECTID'],
-      1,
-      '#ffff33',
-      1283,
-      '#3358ff',
-    ],
-  },
-});
+// STYLE MODERN UNTUK POLYGON RIAU
 
-// Layer banjir
-const banjir = new VectorLayer({
-  source: new VectorSource({
-    format: new GeoJSON(),
-    url: 'data/banjir.json'
+const riauStyle = new Style({
+  stroke: new Stroke({
+    color: 'rgba(255, 255, 255, 0.7)',
+    width: 1.5
   }),
-  style: new Style({
-    image: new Icon({
-      anchor: [0.5, 1],
-      src: 'icon/flood.png',
-      scale: 0.08
-    })
+  fill: new Fill({
+    color: 'rgba(51, 102, 255, 0.15)'
   })
 });
 
-// Layer RTH
+// VECTOR LAYER: POLYGON RIAU
+const riau = new VectorLayer({
+  source: new VectorSource({
+    url: 'data/polygon_riau.json',
+    format: new GeoJSON()
+  }),
+  style: riauStyle
+});
+
+
+// LAYER RTH (ICON MODERN)
+
 const rthLayer = new VectorLayer({
   source: new VectorSource({
-    format: new GeoJSON(),
-    url: 'data/data_rth.json'
+    url: 'data/data_rth.json',
+    format: new GeoJSON()
   }),
   style: new Style({
     image: new Icon({
       anchor: [0.5, 1],
       src: 'icon/rth.png',
-      scale: 0.1
+      scale: 0.13
     })
   })
 });
 
-// Popup HTML elements (dipakai oleh popup kedua)
-const container = document.getElementById('popup');
-const content_element = document.getElementById('popup-content');
-const closer = document.getElementById('popup-closer');
 
-// MAP INIT (tanpa overlay pertama)
+// POPUP GLASSMORPHISM
+const popupContainer = document.getElementById('popup');
+const popupContent = document.getElementById('popup-content');
+const popupCloser = document.getElementById('popup-closer');
+
+const popup = new Overlay({
+  element: popupContainer,
+  positioning: 'top-center',
+  stopEvent: false,
+  offset: [0, -20]
+});
+
+
+// MAP INIT
+
 const map = new Map({
   target: 'map',
   layers: [
-    new TileLayer({ source: new OSM() }),
-    riau,
-    banjir,
+    new TileLayer({
+      source: new OSM(),
+    }),
+    riau, 
     rthLayer
   ],
-  // overlays: []  // tidak perlu mendefinisikan overlays di sini
+  overlays: [popup],
   view: new View({
-    center: fromLonLat([101.438309, 0.510440]),
-    zoom: 7
+    center: fromLonLat([101.4383, 0.5104]),
+    zoom: 9
   })
 });
 
-// POPUP 
-const popup = new Overlay({
-  element: container,
-  positioning: 'top-center',
-  stopEvent: false,
-  offset: [0, -15]
-});
 
-map.addOverlay(popup);
+// POPUP KETIKA DIKLIK
+map.on('singleclick', (evt) => {
+  const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f);
 
-map.on('singleclick', function (evt) {
-  const feature = map.forEachFeatureAtPixel(evt.pixel, function (feat) {
-    return feat;
-  });
-
-  if (feature) {
-    // ambil koordinat geometry (untuk point atau centroid dari geometry)
-    const geometry = feature.getGeometry();
-    let coordinates;
-
-    // beberapa geometry (polygon) punya koordinat array; untuk popup sering ingin centroid
-    if (geometry.getType && geometry.getType() === 'Point') {
-      coordinates = geometry.getCoordinates();
-    } else if (geometry.getType && geometry.getType() === 'Polygon') {
-      // gunakan centroid sederhana (ambil koordinat pertama dari linear ring)
-      const coords = geometry.getCoordinates();
-      // coords[0] adalah outer ring, ambil titik tengah dari bounding box sebagai pendekatan
-      const flat = coords[0];
-      const sum = flat.reduce((acc, c) => [acc[0] + c[0], acc[1] + c[1]], [0,0]);
-      coordinates = [sum[0] / flat.length, sum[1] / flat.length];
-    } else {
-      // fallback: ambil koordinat event klik
-      coordinates = evt.coordinate;
-    }
-
-    let content = '<h3>Informasi Fitur</h3>';
-    content += '<p>Nama Daerah: <strong>' + (feature.get('Nama_Pemetaan') || '-') + '</strong></p>';
-    content += '<p>Jumlah Korban: <strong>' + (feature.get('Jumlah_Korban') || '-') + '</strong></p>';
-
-    content_element.innerHTML = content;
-    popup.setPosition(coordinates);
-  } else {
+  if (!feature) {
     popup.setPosition(undefined);
+    return;
   }
+
+  const name = feature.get('nama') || feature.get('Nama_Pemetaan') || '-';
+  const alamat = feature.get('alamat') || '-';
+  const tanggal = feature.get('tanggal') || '-';
+
+  popupContent.innerHTML = `
+    <div style="padding:5px;">
+      <h5 style="margin:0; font-weight:700;">${name}</h5>
+      <p style="margin:4px 0;">📍 <strong>${alamat}</strong></p>
+      <p style="margin:4px 0;">📅 ${tanggal}</p>
+    </div>
+  `;
+
+  popup.setPosition(evt.coordinate);
 });
 
-// HIGHLIGHT POLYGON 
-const featureOverlay = new VectorLayer({
+popupCloser.onclick = () => {
+  popup.setPosition(undefined);
+  return false;
+};
+
+// HIGHLIGHT HOVER (GLOW EFFECT)
+const highlightLayer = new VectorLayer({
   source: new VectorSource(),
   map: map,
   style: new Style({
     stroke: new Stroke({
-      color: 'rgba(255, 255, 255, 0.7)',
-      width: 2
+      color: 'rgba(255, 255, 255, 0.9)',
+      width: 3
+    }),
+    fill: new Fill({
+      color: 'rgba(255, 255, 255, 0.1)'
     })
   })
 });
 
-let highlight;
-const highlightFeature = function (pixel) {
-  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
-    return feature;
-  });
+let highlighted = null;
 
-  if (feature !== highlight) {
-    if (highlight) {
-      featureOverlay.getSource().removeFeature(highlight);
+map.on('pointermove', (evt) => {
+  if (evt.dragging) return;
+
+  const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f);
+  const info = document.getElementById('info');
+
+  if (feature !== highlighted) {
+    if (highlighted) {
+      highlightLayer.getSource().removeFeature(highlighted);
     }
     if (feature) {
-      featureOverlay.getSource().addFeature(feature);
+      highlightLayer.getSource().addFeature(feature);
+      info.innerHTML = feature.get('nama') || feature.get('DESA') || 'Fitur';
+    } else {
+      info.innerHTML = '-';
     }
-    highlight = feature;
+    highlighted = feature;
   }
-};
-
-const displayFeatureInfo = function (pixel) {
-  const feature = map.forEachFeatureAtPixel(pixel, function (feat) {
-    return feat;
-  });
-
-  const info = document.getElementById('info');
-  if (feature) {
-    info.innerHTML = feature.get('DESA') || '&nbsp;';
-  } else {
-    info.innerHTML = '&nbsp;';
-  }
-};
-
-// Pointer Hover Event
-map.on('pointermove', function (evt) {
-  if (evt.dragging) return;
-  highlightFeature(evt.pixel);
-  displayFeatureInfo(evt.pixel);
 });
 
-// CLOSE POPUP BUTTON (menggunakan popup yang aktif)
-closer.onclick = function () {
-  popup.setPosition(undefined);
-  closer.blur();
-  return false;
-};
 
-// Checkbox Layer Control
-const polygonLayerCheckbox = document.getElementById('polygon');
-const pointLayerCheckbox = document.getElementById('point');
-const rthLayerCheckbox = document.getElementById('rth');
+// CONTROL LAYER CHECKBOX
 
-polygonLayerCheckbox.addEventListener('change', function () {
-  riau.setVisible(polygonLayerCheckbox.checked);
+document.getElementById('polygon').addEventListener('change', (e) => {
+  riau.setVisible(e.target.checked);
 });
 
-pointLayerCheckbox.addEventListener('change', function () {
-  banjir.setVisible(pointLayerCheckbox.checked);
-});
-
-rthLayerCheckbox.addEventListener('change', function () {
-  rthLayer.setVisible(rthLayerCheckbox.checked);
+document.getElementById('rth').addEventListener('change', (e) => {
+  rthLayer.setVisible(e.target.checked);
 });

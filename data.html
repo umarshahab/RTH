@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data RTH</title>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1c1f26, #2a303b);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .navbar a {
+            margin-left: 25px;
+            color: #dcdcdc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .navbar a:hover {
+            color: #fff;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        /* Card */
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+
+        table th,
+        table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        table th {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>📊 Data RTH</h2>
+        <div>
+            <a href="index.html">Dashboard</a>
+            <a href="data.html">Data</a>
+            <a href="map.html">Map</a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- TABLE -->
+        <div class="card">
+            <h2>Daftar Ruang Terbuka Hijau (RTH)</h2>
+
+            <table id="tabelRTH">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Alamat</th>
+                        <th>Tanggal</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- CHART -->
+        <div class="card">
+            <h2>Grafik Jumlah RTH Berdasarkan Alamat</h2>
+            <canvas id="chartAlamat" height="130"></canvas>
+        </div>
+
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                const res = await fetch("./data/data_rth.json");
+                const dataGeoJSON = await res.json();
+
+                // === TABLE RENDER ===
+                const tbody = document.querySelector("#tabelRTH tbody");
+                tbody.innerHTML = "";
+
+                dataGeoJSON.features.forEach(f => {
+                    tbody.innerHTML += `
+                <tr>
+                    <td>${f.properties.no}</td>
+                    <td>${f.properties.nama}</td>
+                    <td>${f.properties.alamat}</td>
+                    <td>${f.properties.tanggal}</td>
+                </tr>`;
+                });
+
+                // === HITUNG RTH PER ALAMAT ===
+                const hitung = {};
+                dataGeoJSON.features.forEach(f => {
+                    const alamat = f.properties.alamat;
+                    hitung[alamat] = (hitung[alamat] || 0) + 1;
+                });
+
+                const labels = Object.keys(hitung);
+                const values = Object.values(hitung);
+
+                const ctx = document.getElementById("chartAlamat");
+                const awalNol = values.map(() => 0);
+
+                // === Chart dibuat tapi data tetap nol (belum dianimasikan) ===
+                const chart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Jumlah RTH",
+                            data: awalNol,
+                            backgroundColor: ["#4FC3F7", "#9575CD", "#81C784", "#FF8A65", "#F06292"],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        animation: {
+                            duration: 0   // <-- matikan dulu, nanti kita nyalakan saat terlihat
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { color: "#fff" } },
+                            x: { ticks: { color: "#fff" } }
+                        },
+                        plugins: {
+                            legend: { labels: { color: "#fff" } }
+                        }
+                    }
+                });
+
+                // === OBSERVER: Jalankan animasi saat canvas mulai terlihat di layar ===
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+
+                            // aktifkan animasi kembali
+                            chart.options.animation.duration = 1500;
+
+                            // isi data asli
+                            chart.data.datasets[0].data = values;
+
+                            // update grafik
+                            chart.update();
+
+                            // animasi hanya 1x
+                            observer.disconnect();
+                        }
+                    });
+                }, { threshold: 0.4 });
+
+                observer.observe(ctx);
+
+            } catch (err) {
+                console.error("Gagal memuat JSON:", err);
+            }
+        }
+
+        loadData();
+    </script>
+
+</body>
+
+</html>

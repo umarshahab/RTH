@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>RTH Map Viewer Modern</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <!-- OpenLayers -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol/ol.css">
+
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #1b1e23;
+      font-family: "Poppins", sans-serif;
+    }
+
+    #map {
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* Glass Control Panel */
+    .glass-panel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 300px;
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+      color: #6f6b6bba;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-panel h4 {
+      font-weight: 700;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      background-color: #ccc;
+      border-radius: 34px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.4s;
+    }
+
+    input:checked+.slider {
+      background-color: #4dd0e1;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(22px);
+    }
+
+    /* Floating Button */
+    .btn-floating {
+      position: absolute;
+      bottom: 25px;
+      left: 25px;
+      padding: 12px 20px;
+      font-size: 18px;
+      border-radius: 50px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      backdrop-filter: blur(10px);
+      border: none;
+    }
+
+    #info-box {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="map"></div>
+
+  <!-- Kontrol Panel Kiri -->
+  <div class="glass-panel">
+    <h4 class="mb-2">🗺 Layer Control</h4>
+    <hr style="border-color: rgba(255,255,255,0.2);">
+
+    <label class="mb-2">
+      <label class="switch">
+        <input type="checkbox" id="polygon" checked>
+        <span class="slider"></span>
+      </label>
+      <span>Polygon Riau</span>
+    </label>
+    <br>
+
+    <label class="mb-2">
+      <label class="switch">
+        <input type="checkbox" id="rth" checked>
+        <span class="slider"></span>
+      </label>
+      <span>RTH Pekanbaru</span>
+    </label>
+
+    <h6 class="mt-3"> Info Hover</h6>
+    <div id="info-box">Arahkan kursor ke titik RTH...</div>
+
+    <!-- POPUP -->
+    <div id="popup" class="ol-popup" style="
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 10px 14px;
+      min-width: 200px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      position: absolute;">
+
+      <button id="popup-closer" style="border:none;background:none;font-size:20px;float:right;cursor:pointer;">×
+      </button>
+
+      <div id="popup-content"></div>
+    </div>
+
+  </div>
+
+  <!-- Button Back -->
+  <a href="index.html" class="btn-floating">
+    ⬅ Back
+  </a>
+
+  <!-- MAIN JS -->
+  <script type="module" src="./main.js"></script>
+
+</body>
+
+</html>
