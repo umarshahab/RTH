@@ -1,226 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Modern</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Modern</title>
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-    body {
-      background: linear-gradient(135deg, #1c1f26, #2a303b);
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+      body {
+        background: linear-gradient(135deg, #1c1f26, #2a303b);
+        color: #fff;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
 
-    /* Navbar */
-    .navbar {
-      width: 100%;
-      padding: 15px 30px;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(12px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      position: sticky;
-      top: 0;
-      z-index: 999;
-    }
+      /* Navbar */
+      .navbar {
+        width: 100%;
+        padding: 15px 30px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(12px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 999;
+      }
 
-    .navbar h2 { font-weight: 700; }
-    .nav-links a {
-      margin-left: 25px;
-      text-decoration: none;
-      color: #e5e5e5;
-      font-weight: 500;
-      transition: 0.3s;
-    }
-    .nav-links a:hover { color: #fff; }
+      .navbar h2 {
+        font-weight: 700;
+      }
+      .nav-links a {
+        margin-left: 25px;
+        text-decoration: none;
+        color: #e5e5e5;
+        font-weight: 500;
+        transition: 0.3s;
+      }
+      .nav-links a:hover {
+        color: #fff;
+      }
 
-    /* Dashboard Container */
-    .dashboard-container { padding: 30px; }
+      /* Dashboard Container */
+      .dashboard-container {
+        padding: 30px;
+      }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 25px;
-      margin-top: 25px;
-    }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 25px;
+        margin-top: 25px;
+      }
 
-    .card {
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      padding: 25px;
-      border-radius: 18px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 35px rgba(0,0,0,0.25);
-    }
-    .card h3 { margin-bottom: 10px; font-size: 1.4rem; }
+      .card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        padding: 25px;
+        border-radius: 18px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
+      }
+      .card h3 {
+        margin-bottom: 10px;
+        font-size: 1.4rem;
+      }
 
-    .card-number {
-      font-size: 2.3rem;
-      font-weight: 700;
-      margin-top: 15px;
-    }
+      .card-number {
+        font-size: 2.3rem;
+        font-weight: 700;
+        margin-top: 15px;
+      }
 
-    /* ======================================= */
-    /* SLIDER / CAROUSEL 3D */
-    /* ======================================= */
+      /* Wrapper agar icon bisa di luar card */
+      .info-wrapper {
+        position: relative;
+        max-width: 900px;
+        margin-left: 40px;
+        margin-top: 35px;
+      }
 
-    .carousel-wrapper {
-      position: relative;
-      width: 100%;
-      height: 350px;
-      perspective: 1600px;
-      margin-top: 20px;
-    }
+      .icon-outside {
+        position: absolute;
+        right: -250px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 120px;
+        opacity: 0.9;
+      }
+      .icon-outside img {
+        width: 325px; 
+        height: auto;
+      }
 
-    .carousel {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform-style: preserve-3d;
-      transition: transform 0.9s cubic-bezier(.19,.57,.3,1.25);
-    }
+      /* SLIDER / CAROUSEL 3D */
+      .carousel-wrapper {
+        position: relative;
+        width: 100%;
+        height: 350px;
+        perspective: 1600px;
+        margin-top: 20px;
+      }
 
-    .card-slide {
-      width: 260px;
-      height: 350px;
-      position: absolute;
-      top: -175px;
-      left: -130px;
-      border-radius: 22px;
-      overflow: hidden;
-      background: #000;
-      cursor: pointer;
-      transition: 0.9s;
-    }
+      .carousel {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-style: preserve-3d;
+        transition: transform 0.9s cubic-bezier(0.19, 0.57, 0.3, 1.25);
+      }
 
-    .card-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+      .card-slide {
+        width: 260px;
+        height: 350px;
+        position: absolute;
+        top: -175px;
+        left: -130px;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #000;
+        cursor: pointer;
+        transition: 0.9s;
+      }
 
-    .arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      color: white;
-      font-size: 32px;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 50%;
-      z-index: 20;
-      transition: 0.3s;
-    }
-    .arrow:hover { background: rgba(255,255,255,0.2); }
+      .card-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-    .arrow.left { left: 20px; }
-    .arrow.right { right: 20px; }
-  </style>
-</head>
+      .arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        font-size: 32px;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        z-index: 20;
+        transition: 0.3s;
+      }
+      .arrow:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
 
-<body>
+      .arrow.left {
+        left: 20px;
+      }
+      .arrow.right {
+        right: 20px;
+      }
+    </style>
+  </head>
 
-  <!-- NAVBAR -->
-  <div class="navbar">
-    <h2>🌿 Dashboard RTH</h2>
-    <div class="nav-links">
-      <a href="#">Dashboard</a>
-      <a href="data.html">Data</a>
-      <a href="map.html">Map</a>
-    </div>
-  </div>
-
-  <!-- DASHBOARD CONTENT -->
-  <div class="dashboard-container">
-    <h2>Ringkasan Statistik</h2>
-
-    <div class="grid">
-      <div class="card"><h3>Total RTH</h3><div class="card-number">128</div></div>
-      <div class="card"><h3>RTH Aktif</h3><div class="card-number" style="color:#8bdfff;">95</div></div>
-      <div class="card"><h3>RTH Tidak Aktif</h3><div class="card-number" style="color:#ff7272;">33</div></div>
-      <div class="card"><h3>Pengunjung Hari Ini</h3><div class="card-number">542</div></div>
-    </div>
-
-    <!-- SLIDER MASUK DI SINI -->
-    <div class="card" style="margin-top:35px;">
-      <h3>Galeri RTH (Auto Slide)</h3>
-
-      <div class="carousel-wrapper">
-
-        <div class="arrow left" onclick="prevSlide()">&#10094;</div>
-        <div class="arrow right" onclick="nextSlide()">&#10095;</div>
-
-        <div id="carousel" class="carousel"></div>
-
+  <body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <h2>🌿 Dashboard RTH</h2>
+      <div class="nav-links">
+        <a href="#">Dashboard</a>
+        <a href="data.html">Data</a>
+        <a href="map.html">Map</a>
       </div>
     </div>
 
-  </div>
+    <!-- INFO RTH WRAPPER -->
+    <div class="info-wrapper">
+      <!-- CARD UTAMA -->
+      <div
+        class="card"
+        style="
+          padding: 30px;
+          display: flex;
+          gap: 20px;
+          justify-content: space-between;
+        "
+      >
+        <div style="flex: 1">
+          <h3>Apa Itu Ruang Terbuka Hijau (RTH)?</h3>
+          <p style="margin-top: 10px; line-height: 1.7; color: #d6d6d6">
+            Ruang Terbuka Hijau (RTH) adalah area atau kawasan yang digunakan
+            untuk vegetasi tumbuhan, baik secara alami maupun yang direncanakan.
+            RTH memiliki peran penting sebagai paru-paru kota, penyerap polutan,
+            tempat rekreasi masyarakat, serta menjaga keseimbangan ekosistem
+            perkotaan.
+          </p>
 
-<script>
-/* =============================
-   DATA GAMBAR + TEKS
-============================= */
-const images = [
-  "https://smarttourism.pekanbaru.go.id/storage/destinations/71841-rth-tunjuk-ajar-dan-integritas.jpg",
-  "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-  "https://images.unsplash.com/photo-1470770841072-f978cf4d019e"
-];
+          <h4 style="margin-top: 15px">🌱 Fungsi Utama RTH</h4>
+          <ul
+            style="
+              margin-top: 8px;
+              padding-left: 20px;
+              color: #cfcfcf;
+              line-height: 1.7;
+            "
+          >
+            <li>
+              Menjaga kualitas udara dengan menyerap polusi dan menghasilkan
+              oksigen.
+            </li>
+            <li>
+              Menjadi tempat rekreasi, olahraga, dan aktivitas masyarakat.
+            </li>
+            <li>Mengurangi efek urban heat (panas berlebih di kota).</li>
+            <li>Meningkatkan estetika lingkungan kota.</li>
+            <li>Mendukung keberlanjutan lingkungan dan konservasi alam.</li>
+          </ul>
 
-const carousel = document.getElementById("carousel");
+          <h4 style="margin-top: 15px">🌿 Jenis–Jenis RTH di Pekanbaru</h4>
+          <ul
+            style="
+              margin-top: 8px;
+              padding-left: 20px;
+              color: #cfcfcf;
+              line-height: 1.7;
+            "
+          >
+            <li>
+              RTH Publik seperti taman kota, taman rekreasi, dan alun-alun.
+            </li>
+            <li>RTH Privat seperti taman perumahan atau area hijau kantor.</li>
+            <li>
+              Taman Tematik seperti taman bermain, taman budaya, atau taman
+              edukasi.
+            </li>
+          </ul>
 
-let html = "";
-images.forEach(src => {
-  html += `<div class="card-slide"><img src="${src}"></div>`;
-});
-carousel.innerHTML = html;
+          <p style="margin-top: 15px; color: #d1d1d1">
+            Dashboard ini membantu menampilkan data RTH, memetakan lokasi RTH di
+            Kota Pekanbaru, serta memberikan gambaran statistik agar masyarakat
+            dan pemerintah dapat mengelola RTH secara lebih maksimal.
+          </p>
+        </div>
+      </div>
 
-const cards = document.querySelectorAll(".card-slide");
-let index = 0;
+      <!-- ICON DI LUAR CARD -->
+      <div class="icon-outside">
+        <img src="icon/love-plant.png" />
+      </div>
+    </div>
 
-/* UPDATE POSISI */
-function updateCarousel() {
-  const spacing = 260;
+    <!-- DASHBOARD CONTENT -->
+    <div class="dashboard-container">
+      <h2>Ringkasan Statistik</h2>
 
-  cards.forEach((card, i) => {
-    const offset = i - index;
-    let x = offset * spacing;
-    let z = -Math.abs(offset) * 150;
-    let rotateY = offset * -25;
-    let scale = offset === 0 ? 1.15 : 0.7;
+      <div class="grid">
+        <div class="card">
+          <h3>Total RTH</h3>
+          <div class="card-number">128</div>
+        </div>
+        <div class="card">
+          <h3>RTH Aktif</h3>
+          <div class="card-number" style="color: #8bdfff">95</div>
+        </div>
+        <div class="card">
+          <h3>RTH Tidak Aktif</h3>
+          <div class="card-number" style="color: #ff7272">33</div>
+        </div>
+        <div class="card">
+          <h3>Pengunjung Hari Ini</h3>
+          <div class="card-number">542</div>
+        </div>
+      </div>
 
-    card.style.transform =
-      `translateX(${x}px) translateZ(${z}px) rotateY(${rotateY}deg) scale(${scale})`;
-    card.style.opacity = offset === 0 ? 1 : 0.55;
-  });
-}
+      <!-- SLIDER -->
+      <div class="card" style="margin-top: 35px">
+        <h3>Galeri RTH</h3>
 
-function nextSlide() {
-  index = (index + 1) % cards.length;
-  updateCarousel();
-}
-function prevSlide() {
-  index = (index - 1 + cards.length) % cards.length;
-  updateCarousel();
-}
+        <div class="carousel-wrapper">
+          <div class="arrow left" onclick="prevSlide()">&#10094;</div>
+          <div class="arrow right" onclick="nextSlide()">&#10095;</div>
 
-setInterval(nextSlide, 3000);
-updateCarousel();
-</script>
+          <div id="carousel" class="carousel"></div>
+        </div>
+      </div>
+    </div>
 
-</body>
+    <script>
+      const images = [
+        "https://smarttourism.pekanbaru.go.id/storage/destinations/71841-rth-tunjuk-ajar-dan-integritas.jpg",
+        "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+        "https://images.unsplash.com/photo-1470770841072-f978cf4d019e",
+      ];
+
+      const carousel = document.getElementById("carousel");
+      let html = "";
+      images.forEach((src) => {
+        html += `<div class="card-slide"><img src="${src}"></div>`;
+      });
+      carousel.innerHTML = html;
+
+      const cards = document.querySelectorAll(".card-slide");
+      let index = 0;
+
+      function updateCarousel() {
+        const spacing = 260;
+
+        cards.forEach((card, i) => {
+          const offset = i - index;
+          let x = offset * spacing;
+          let z = -Math.abs(offset) * 150;
+          let rotateY = offset * -25;
+          let scale = offset === 0 ? 1.15 : 0.7;
+
+          card.style.transform = `translateX(${x}px) translateZ(${z}px) rotateY(${rotateY}deg) scale(${scale})`;
+          card.style.opacity = offset === 0 ? 1 : 0.55;
+        });
+      }
+
+      function nextSlide() {
+        index = (index + 1) % cards.length;
+        updateCarousel();
+      }
+      function prevSlide() {
+        index = (index - 1 + cards.length) % cards.length;
+        updateCarousel();
+      }
+
+      setInterval(nextSlide, 3000);
+      updateCarousel();
+    </script>
+  </body>
 </html>
